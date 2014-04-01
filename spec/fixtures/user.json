@@ -1,0 +1,40 @@
+{
+  "_links": {
+    "self": {
+      "href": "/users"
+    },
+    "curies": [
+      {
+        "name": "ht",
+        "href": "http://haltalk.herokuapp.com/rels/{rel}",
+        "templated": true
+      }
+    ],
+    "ht:user": [
+      {
+        "href": "/users/mike",
+        "title": "Mike Kelly"
+      },
+      {
+        "href": "/users/graste",
+        "title": "gra ste"
+      },
+      {
+        "href": "/users/mamund",
+        "title": "Mike Amundsen"
+      },
+      {
+        "href": "/users/iris",
+        "title": "Iris"
+      },
+      {
+        "href": "/users/Jap",
+        "title": "Jap Kebab"
+      },
+      {
+        "href": "/users/jayasankar",
+        "title": "jayasankar"
+      }
+    ]
+  }
+}
