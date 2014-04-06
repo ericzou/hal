@@ -1,0 +1,28 @@
+{
+  "_links": {
+    "self": { "href": "http://localhost:3000/api/activities" },
+    "activities": [
+      { "href": "http://localhost:3000/api/activities/1 " },
+      { "href": "http://localhost:3000/api/activities/2 " },
+      { "href": "http://localhost:3000/api/activities/2 " }
+    ]
+  },
+
+  "_embedded": {
+    "activities": [{
+      "_links" : {
+        "self": { "href": "http//localhost:3000/api/activities/1" },
+        "related_content": { "href": "http//localhost:3000/api/activities/1" },
+      },
+      "motive": "quality_project",
+      "updated_at": 123123123
+    }, {
+      "_links" : {
+        "self": { "href": "http//localhost:3000/api/activities/2" },
+        "related_content": { "href": "http//localhost:3000/api/comment_thread/39" },
+      },
+      "motive": "comment_thread",
+      "updated_at": 12312312123
+    }]
+  }
+}

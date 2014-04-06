@@ -1,0 +1,30 @@
+{
+  "_links": {
+    "self": { "href": "http://localhost:3000/api/user_session" },
+    "current_user": { "href": "http://localhost:3000/api/users/6" },
+    "users": [
+      { "href": "http://localhost:3000/api/users/7" }
+    ]
+  },
+
+  "_embedded": {
+    "current_user": {
+      "_links": {
+        "self": "http://localhost:3000/api/users/6"
+      },
+      "name": "Phu T"
+    },
+    "users": [
+      {
+        "_links": {
+          "self": { "href": "http://localhost:3000/api/users/7" },
+          "physician": { "href": "http://localhost:3000/api/physicians/1" },
+          "hospital": { "href": "http://localhot:3000/api/hospitals/1" },
+          "unit": { "href": "http://localhot:3000/api/unit/1" },
+        },
+        "full_name": "Evangeline Stanton",
+        "admin": true
+      }
+    ]
+  }
+}

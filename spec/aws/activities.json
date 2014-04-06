@@ -1,0 +1,53 @@
+{
+  "activities": [
+  {
+    "id": 14983,
+    "type": "activity",
+    "updated_at": 1395865021674,
+    "motive": "quality_project",
+    "related_content": {
+      "type": "quality_project",
+      "id": 7
+    }
+  },
+  {
+    "id": 14675,
+    "type": "activity",
+    "updated_at": 1395864944399,
+    "motive": "comment_thread_created",
+    "related_content": {
+      "type": "comment_thread",
+      "id": 39
+    }
+  },
+  {
+    "id": 14367,
+    "type": "activity",
+    "updated_at": 1395864125370,
+    "motive": "comment_thread_created",
+    "related_content": {
+      "type": "comment_thread",
+      "id": 38
+    }
+  },
+  {
+    "id": 14059,
+    "type": "activity",
+    "updated_at": 1395864004592,
+    "motive": "quality_project",
+    "related_content": {
+      "type": "quality_project",
+      "id": 6
+    }
+  },
+  {
+    "id": 13681,
+    "type": "activity",
+    "updated_at": 1395082563957,
+    "motive": "comment_thread_created",
+    "related_content": {
+      "type": "comment_thread",
+      "id": 36
+    }
+  }
+]

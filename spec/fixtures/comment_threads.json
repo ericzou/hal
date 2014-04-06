@@ -1,0 +1,49 @@
+// comment_threads
+{
+  "_links": {
+    "self": { "href": "http://localhost:3000/api/metric_samples/27/comment_threads" },
+    "comment_threads": [
+      { "href": "http://localhost:3000/api/comment_threads/1" },
+      { "href": "http://localhost:3000/api/comment_threads/2" },
+      { "href": "http://localhost:3000/api/comment_threads/3" },
+    ]
+  },
+  "_embedded": {
+    "comment_threads": [
+      {
+        "_links": {
+          "self": { "href": "http://localhost:3000/api/comment_threads/1" },
+          "item": { "href": "http://localhost:3000/api/metric_samples/27" },
+          "author": { "href": "http://localhost:3000/api/users/6" },
+          "comments": { "href": "http://localhost:3000/api/comment_threads/1/comments" },
+        },
+        "subject_type": "hosptial",
+        "title": "Nursing Home Patients and Sodium Control"
+      },
+      {
+        "_links": {
+          "self": { "href": "http://localhost:3000/api/comment_threads/1" },
+          "item": { "href": "http://localhost:3000/api/metric_samples/27" },
+          "author": { "href": "http://localhost:3000/api/users/6" },
+          "comments": [
+            { "href": "http://localhost:3000/api/comments/1" },
+            { "href": "http://localhost:3000/api/comments/2" },
+            { "href": "http://localhost:3000/api/comments/3" }
+          ]
+        },
+        // would we allow multiple level embed?
+        "_embedded": {
+          "comments": {
+            //...
+          }
+        }
+        "subject_type": "hosptial",
+        "title": "Nursing Home Patients and Sodium Control"
+      }
+    ]
+  }
+
+}
+
+
+// get comment_threads -> comment_threads.first.comments
