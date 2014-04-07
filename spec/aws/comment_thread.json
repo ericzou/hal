@@ -1,0 +1,43 @@
+{
+  "comment_threads": [
+  {
+    "id": 4,
+    "type": "comment_thread",
+    "title": "Is the Peak always seasonal?",
+    "created_at": 1373475096810,
+    "url": "https://dabo-act-acceptance.herokuapp.com/metric_samples/27/discuss",
+    "item": {
+      "type": "metric_sample",
+      "id": 27
+   },
+   "resource_url": "/api/comment_threads/4/comments",
+   "metric_type_id": 14,
+   "subject_type": "Hospital",
+   "author": {
+     "type": "user",
+     "id": 25
+   },
+   "comments": [
+   {
+     "type": "comment",
+     "id": 6
+   },
+   {
+     "type": "comment",
+     "id": 50
+   },
+   {
+     "type": "comment",
+     "id": 54
+   },
+   {
+     "type": "comment",
+     "id": 70
+   },
+   {
+     "type": "comment",
+     "id": 116
+   }
+  ]
+}
+

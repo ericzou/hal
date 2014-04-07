@@ -1,0 +1,13 @@
+{
+  "_link": {
+    "self": { "href": "http://localhost:3000/api/comment_thread/4" },
+    "item": { "href": "http://localhost:3000/api/metric_samples/27"},
+    "author": { "href": "http://localhost:3000/api/users/2"},
+    "comments": [
+      { "href": "http://localhost:3000/api/comment/1" },
+      { "href": "http://localhost:3000/api/comment/2" },
+      { "href": "http://localhost:3000/api/comment/3" },
+      { "href": "http://localhost:3000/api/comment/4" }
+    ]
+  }
+}
