@@ -27,3 +27,9 @@ end
 def factory_account
   account = Account.new
 end
+
+class CommentSerializer
+end
+
+class AccountSerializer
+end

@@ -6,7 +6,7 @@ class UserSessionSerializer
   def links
     relation :current_user, href: current_user_url
 
-    relation :users do |user|
+    relations :users do |user|
       link href: user_url
     end
   end
