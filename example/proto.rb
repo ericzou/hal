@@ -2,6 +2,7 @@ require 'pry'
 require 'active_support/concern'
 require "active_support/core_ext/string/inflections"
 require "active_support/core_ext/module/delegation"
+require 'awesome_print'
 
 module Hal
 
@@ -37,6 +38,10 @@ module Hal
       builder.add_resource(name, options)
     end
 
+    def resources(name, options={})
+      builder.add_resources(name, options)
+    end
+
   end
 
   class Node
@@ -48,7 +53,6 @@ module Hal
       @data = {}
       @name = options.delete(:name)
       @properties = options.delete(:properties) || {}
-      @type = options.delete(:type)
     end
 
     def as_json
@@ -175,7 +179,7 @@ module Hal
       node
     end
 
-    def add_resource(name, options)
+    def add_resource(name, options={})
       resource = @serializer.instance_variable_get("@#{name}")
       node = Hal::Node.new(type: :resource, name: name)
       @current_node.add_child(node)
@@ -188,8 +192,24 @@ module Hal
       end
     end
 
+    def add_resources(name, options={})
+      resources = @serializer.instance_variable_get("@#{name}")
+      node = Hal::Node.new(type: :resources, name: name)
+      @current_node.add_child(node)
+      current = @current_node
+      begin
+        @current_node = node
+        resources.each do |resource|
+          Hal.serialize(resource, root: @root_node, current: @current_node)
+        end
+      ensure
+        @current_node = current
+      end
+
+    end
+
     def as_json
-      @root_node.as_json
+      @current_node.as_json
     end
   end
 end
@@ -236,7 +256,7 @@ class UserSerializer
 
   def embedded
     resource :account
-    # resources :comments
+    resources :comments
   end
 end
 
@@ -259,14 +279,27 @@ class AccountSerializer
   end
 end
 
+class CommentSerializer
+  include Hal::Serializer
+  attr_accessor :comment
+
+  delegate :id, to: :comment
+
+  def initialize(comment)
+    @comment = comment
+  end
+
+  def attributes
+    [:id]
+  end
+
+  def links
+    relation :self, href: "http://example.com/#{@comment.id}"
+  end
+
+end
+
 if __FILE__ == $0
-
-  # serializer = Hal.serializer_for(user)
-  # builder = Hal::Builder.new(serializer: serializer) do |builder|
-  #   builder.add_attributes if serializer.respond_to?(:attributes)
-  #   builder.add_links if serializer.respond_to?(:links)
-  #   builder.add_embedded if serializer.respond_to?(:embedded)
-  # end
-
-  puts "============", Hal.serialize(user), "============"
+  data = Hal.serialize(user)
+  puts "============", ap(data), "============"
 end
