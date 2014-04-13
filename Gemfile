@@ -6,4 +6,4 @@ gem 'activesupport'
 gem 'rspec'
 gem 'kicker'
 gem 'pry'
-
+gem 'awesome_print'
