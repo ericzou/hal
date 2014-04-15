@@ -1,9 +1,4 @@
 source 'https://rubygems.org'
 
-gem 'activesupport'
-
 # development
-gem 'rspec'
-gem 'kicker'
-gem 'pry'
-gem 'awesome_print'
+gemspec
