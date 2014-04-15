@@ -8,11 +8,11 @@ module Hal
 
   def self.serialize(resource, options={})
     serializer = Hal.serializer_for(resource)
-    options = { serializer: serializer }.merge(options)
+    options = { serializer: serializer, recursive: true }.merge(options)
     builder = Hal::Builder.new(options) do |builder|
       builder.add_attributes if serializer.respond_to?(:attributes)
       builder.add_links if serializer.respond_to?(:links)
-      builder.add_embedded if serializer.respond_to?(:embedded)
+      builder.add_embedded if serializer.respond_to?(:embedded) && builder.recursive?
     end
     builder.as_json
   end
@@ -111,8 +111,13 @@ module Hal
       @serializer = options.delete(:serializer)
       @root_node = options.delete(:root) || Hal::Node.new(type: :root)
       @current_node = options.delete(:current) || @root_node;
+      @recursive = options.delete(:recursive)
       @serializer.builder = self
       yield self
+    end
+
+    def recursive?
+      @recursive
     end
 
     def add_attributes
@@ -155,13 +160,16 @@ module Hal
     end
 
     def add_relations(name)
+      objects = @serializer.instance_variable_get("@#{name}")
+      return unless objects
+
       current = @current_node
       begin
         node = Hal::Node.new(type: :relations, name: name)
         @current_node.add_child(node)
         @current_node = node
 
-        objects = @serializer.instance_variable_get("@#{name}")
+
         objects.each { |object| yield(object) }
       ensure
         @current_node = current
@@ -181,19 +189,22 @@ module Hal
 
     def add_resource(name, options={})
       resource = @serializer.instance_variable_get("@#{name}")
+      # skip of resource is not found
+      return unless resource
+
       node = Hal::Node.new(type: :resource, name: name)
       @current_node.add_child(node)
       current = @current_node
       begin
         @current_node = node
-        Hal.serialize(resource, root: @root_node, current: @current_node)
+        Hal.serialize(resource, root: @root_node, current: @current_node, recursive: false)
       ensure
         @current_node = current
       end
     end
 
     def add_resources(name, options={})
-      resources = @serializer.instance_variable_get("@#{name}")
+      resources = @serializer.instance_variable_get("@#{name}") || []
       node = Hal::Node.new(type: :resources, name: name)
       @current_node.add_child(node)
       current = @current_node
@@ -221,9 +232,11 @@ User = Class.new OpenStruct
 Comment = Class.new OpenStruct
 Account = Class.new OpenStruct
 
-comments = [Comment.new(id: 1), Comment.new(id: 2)]
+user = author = User.new(name: 'John Smith', id: 2)
+comments = [Comment.new(id: 1, author: author), Comment.new(id: 2, author: author)]
 account = Account.new(id: 1)
-user = User.new(comments: comments, account: account, name: 'mooo')
+user.account = account
+user.comments = comments
 
 class UserSerializer
   include Hal::Serializer
@@ -247,10 +260,12 @@ class UserSerializer
   end
 
   def links
-    relation :account, href: "http://example.com/accounts/#{@account.id}"
+    relation :account, href: "http://example.com/accounts/#{@account.id}" if @account
 
-    relations :comments do |comment|
-      link href: "http://example.com/comments/#{comment.id}"
+    if @comments
+      relations :comments do |comment|
+        link href: "http://example.com/comments/#{comment.id}"
+      end
     end
   end
 
@@ -287,6 +302,7 @@ class CommentSerializer
 
   def initialize(comment)
     @comment = comment
+    @author = comment.author
   end
 
   def attributes
@@ -295,6 +311,11 @@ class CommentSerializer
 
   def links
     relation :self, href: "http://example.com/#{@comment.id}"
+    relation :author, href: "http://example.com/users/#{@author.id}"
+  end
+
+  def embedded
+    resource :author
   end
 
 end
