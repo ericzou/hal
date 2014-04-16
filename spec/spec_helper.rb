@@ -1,6 +1,10 @@
 require 'pry'
 require 'hal'
 
+class ASerializer
+  include Hal::Serializer
+end
+
 class UserSerializer
   include Hal::Serializer
 

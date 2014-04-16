@@ -1,6 +1,5 @@
 module Hal
   class Builder
-    attr_accessor :serializer
 
     def initialize(options)
       @serializer = options.delete(:serializer)
@@ -8,16 +7,16 @@ module Hal
       @current_node = options.delete(:current) || @root_node;
       @recursive = options.delete(:recursive)
       @serializer.builder = self
-      yield self
+      yield self if block_given?
     end
 
     def recursive?
-      @recursive
+      !!@recursive
     end
 
     def add_attributes
-      serializer.attributes.each do |attr|
-        @current_node.add_property(attr, serializer.public_send(attr))
+      @serializer.attributes.each do |attr|
+        @current_node.add_property(attr, @serializer.public_send(attr))
       end
     end
 
