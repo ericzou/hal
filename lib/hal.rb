@@ -1,4 +1,7 @@
 require "active_support/core_ext/string/inflections"
+require 'hal/serializer'
+require 'hal/builder'
+require 'hal/node'
 
 module Hal
   def self.serialize(resource, options={})
@@ -18,6 +21,3 @@ module Hal
   end
 
 end
-
-require 'hal/serializer'
-require 'hal/builder'

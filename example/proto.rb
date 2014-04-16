@@ -2,7 +2,7 @@ require "active_support/core_ext/module/delegation"
 require 'awesome_print'
 require 'ostruct'
 require 'pry'
-require_relative '../lib/hal'
+require 'hal'
 
 User = Class.new OpenStruct
 Comment = Class.new OpenStruct
