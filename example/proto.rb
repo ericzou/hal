@@ -98,5 +98,7 @@ end
 
 if __FILE__ == $0
   data = Hal.serialize(user)
-  puts "============", ap(data), "============"
+  ap "============"
+  ap data
+  ap "============"
 end
