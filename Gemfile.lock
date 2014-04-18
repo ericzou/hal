@@ -3,6 +3,7 @@ PATH
   specs:
     hal (0.01)
       activesupport
+      multi_json
 
 GEM
   remote: https://rubygems.org/
@@ -28,6 +29,7 @@ GEM
       rb-kqueue (>= 0.2)
     method_source (0.8.2)
     minitest (5.3.3)
+    multi_json (1.9.2)
     notify (0.5.2)
     pry (0.9.12.6)
       coderay (~> 1.0)

@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.license     = "MIT"
 
   s.add_runtime_dependency 'activesupport'
+  s.add_runtime_dependency 'multi_json'
 
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'kicker'

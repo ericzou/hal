@@ -1,4 +1,5 @@
 require "active_support/core_ext/string/inflections"
+require 'multi_json'
 require 'hal/serializer'
 require 'hal/builder'
 require 'hal/node'
@@ -18,6 +19,11 @@ module Hal
   def self.serializer_for(resource)
     klass = (resource.class.to_s + 'Serializer').constantize
     klass.new(resource)
+  end
+
+  def self.json(resource, options={})
+    pretty = options.delete(:pretty)
+    MultiJson.dump(Hal.serialize(resource, options), pretty: pretty)
   end
 
 end
