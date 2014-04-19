@@ -11,25 +11,40 @@ Hal does very little magic and does not assume a lot of things. A simple example
 ```ruby
 class UserSerializer
   include Hal::Serializer
+  attr_accessor :user
 
-  delegate :name, :title to: :user
+  delegate :name, :title, to: :user
 
   def initialize(user)
     @user = user
   end
 
   def attributes
-    [:name, :title, ]
+    [:name, :title]
   end
 
   def links
-    relation :self, "http://yourapp.com/users/#{@user.id}"
+    relation :self, { href: "http://yourapp.com/users/#{@user.id}" }
   end
 end
+
+if __FILE__ == $0
+  json = Hal.json(user, pretty: true)
+  puts "============", json, "============"
+end
+
 ```
 
 This will generate this following JSON
 
 ```json
-
+{
+  "_links": {
+    "self": {
+      "href": "http://yourapp.com/users/1"
+    }
+  },
+  "name": "foo",
+  "title": "Dr"
+}
 ```
