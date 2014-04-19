@@ -42,12 +42,6 @@ module Hal
       end
     end
 
-    def add__links
-      node = Hal::Node.new(type: :links, name: '_links')
-      @current_node.add_child(node)
-      node
-    end
-
     def add_relation(name, properties, options={})
       node = Hal::Node.new(type: :relation, name: name, properties: properties)
       @current_node.add_child(node)
@@ -63,7 +57,6 @@ module Hal
         @current_node.add_child(node)
         @current_node = node
 
-
         objects.each { |object| yield(object) }
       ensure
         @current_node = current
@@ -73,12 +66,6 @@ module Hal
     def add_link(options)
       node = Hal::Node.new(type: :link, properties: options)
       @current_node.add_child(node)
-    end
-
-    def add__embedded
-      node = Hal::Node.new(type: :embedded, name: '_embedded')
-      @current_node.add_child(node)
-      node
     end
 
     def add_resource(name, options={})
@@ -118,6 +105,20 @@ module Hal
     end
 
     private
+
+    # Create a '_link' node
+    def add__links
+      node = Hal::Node.new(type: :links, name: '_links')
+      @current_node.add_child(node)
+      node
+    end
+
+    # Create a '_embedded' node
+    def add__embedded
+      node = Hal::Node.new(type: :embedded, name: '_embedded')
+      @current_node.add_child(node)
+      node
+    end
 
     # Making assumptions that the serializer always holds the resource(s)
     # as instance variable
