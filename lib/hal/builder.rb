@@ -48,13 +48,13 @@ module Hal
       node
     end
 
-    def add_relation(name, options)
-      node = Hal::Node.new(type: :relation, name: name, properties: options)
+    def add_relation(name, properties, options={})
+      node = Hal::Node.new(type: :relation, name: name, properties: properties)
       @current_node.add_child(node)
     end
 
     def add_relations(name)
-      objects = @serializer.instance_variable_get("@#{name}")
+      objects = resource_for(name)
       return unless objects
 
       current = @current_node
@@ -82,7 +82,7 @@ module Hal
     end
 
     def add_resource(name, options={})
-      resource = @serializer.instance_variable_get("@#{name}")
+      resource = resource_for(name)
       # skip of resource is not found
       return unless resource
 
@@ -98,7 +98,7 @@ module Hal
     end
 
     def add_resources(name, options={})
-      resources = @serializer.instance_variable_get("@#{name}") || []
+      resources = resource_for(name) || []
       node = Hal::Node.new(type: :resources, name: name)
       @current_node.add_child(node)
       current = @current_node
@@ -115,6 +115,14 @@ module Hal
 
     def as_json
       @current_node.as_json
+    end
+
+    private
+
+    # Making assumptions that the serializer always holds the resource(s)
+    # as instance variable
+    def resource_for(name)
+      @serializer.instance_variable_get('@#{name}')
     end
   end
 end
