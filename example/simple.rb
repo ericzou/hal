@@ -5,7 +5,7 @@ require "active_support/core_ext/module/delegation"
 class User < Struct.new(:name, :title, :id)
 end
 
-user = User.new(name: 'foo', title: 'Dr', id: 1)
+user = User.new('foo', 'Dr', 1)
 
 class UserSerializer
   include Hal::Serializer
