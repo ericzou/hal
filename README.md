@@ -27,12 +27,6 @@ class UserSerializer
     relation :self, { href: "http://yourapp.com/users/#{@user.id}" }
   end
 end
-
-if __FILE__ == $0
-  json = Hal.json(user, pretty: true)
-  puts "============", json, "============"
-end
-
 ```
 
 This will generate this following JSON
