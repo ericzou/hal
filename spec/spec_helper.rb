@@ -37,3 +37,15 @@ end
 
 class AccountSerializer
 end
+
+RSpec::Matchers.define :have_instance do |expected|
+  match do |actual|
+    if expected.is_a? Symbol
+      !!actual.instance_variable_get("@#{expected}")
+    else
+      !!actual.instance_variables.detect do |var_name|
+        actual.instance_variable_get(var_name) == expected
+      end
+    end
+  end
+end

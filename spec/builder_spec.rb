@@ -9,34 +9,48 @@ describe 'Builder when initialized' do
   end
 
   it 'has a root node' do
+    expect(builder).to have_instance(:root_node)
   end
 
   it 'has a current node' do
+    expect(builder).to have_instance(:current_node)
   end
 
   it 'assign self to the serializer' do
+    expect(builder).to have_instance(serializer)
   end
 end
 
 describe 'Builder initialized with options' do
   let(:serializer) { ASerializer.new }
 
-  def builder(options)
+  def builder(options = {})
     Hal::Builder.new(options)
   end
+
+  before do
+    @options = { serializer: serializer }
+  end
+
+  it 'raises error when serialzier not supplied' do
+    expect{ builder }.to raise_error Hal::Builder::NoSerializerError
+  end
+
   it 'sets recurisve' do
-    expect(builder.recursive?).to be_false
+    @options.merge!({ recursive: true })
+    expect(builder(@options).recursive?).to be_true
   end
 
   it 'sets root node' do
+    root = double
+    @options.merge!({ root: root })
+    expect(builder(@options)).to have_instance(root)
   end
 
   it 'sets current node' do
-  end
-end
-
-describe 'Builder initialized with block' do
-  it 'calls the block with self' do
+    current = double
+    @options.merge!({ current: current })
+    expect(builder(@options)).to have_instance(current)
   end
 end
 
