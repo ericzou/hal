@@ -1,8 +1,9 @@
 module Hal
   class Builder
+    Hal::Builder::NoSerializerError = Class.new(StandardError)
 
     def initialize(options)
-      @serializer = options.delete(:serializer)
+      @serializer = options.delete(:serializer) || fail(Hal::Builder::NoSerializerError)
       @root_node = options.delete(:root) || Hal::Node.new(type: :root)
       @current_node = options.delete(:current) || @root_node;
       @recursive = options.delete(:recursive)
