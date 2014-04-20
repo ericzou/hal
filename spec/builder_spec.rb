@@ -55,7 +55,20 @@ describe 'Builder initialized with options' do
 end
 
 describe 'Builder #add_attributes' do
+  class ASerializer
+    def attributes
+      [:foo, :bar]
+    end
+
+    def foo; 'foo'; end;
+    def bar; 'bar'; end
+  end
+  let(:serializer) { ASerializer.new }
+  let(:builder) { Hal::Builder.new(serializer: serializer) }
   it 'adds all attributes from serializer to the current node' do
+    properties = builder.instance_variable_get('@current_node').properties
+    builder.add_attributes
+    expect(properties).to eq({ foo: 'foo', bar: 'bar'})
   end
 end
 
