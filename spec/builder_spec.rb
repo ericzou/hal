@@ -142,23 +142,75 @@ describe 'Builder #add_relation' do
 end
 
 describe 'Builder #add_relations' do
-  it 'creates a relations node under the current node' do
+  class AnotherSerializer < ASerializer
+    def initialize(comments)
+      @comments = comments
+    end
+  end
+  let(:first_comment) { double }
+  let(:second_comment) { double }
+  let(:comments) { [first_comment, second_comment]}
+  let(:serializer) { AnotherSerializer.new(comments) }
+  let(:builder) { Hal::Builder.new(serializer: serializer) }
+
+  before do
+    @current_node = builder.instance_variable_get('@current_node')
   end
 
-  it 'yields with individual resource' do
+  it 'creates a relations node under the current node' do
+    builder.add_relations(:comments) {}
+    node = @current_node.children.detect{ |node| node.type == :relations}
+    expect(node).not_to be_nil
+  end
+
+  it 'yields control' do
+    expect { |b| builder.add_relations(:comments, &b) }.to yield_control.exactly(2).times
+  end
+
+  it 'yields with individual resource as arg' do
+    expect { |b| builder.add_relations(:comments, &b) }.to yield_successive_args(first_comment, second_comment)
   end
 end
 
 describe 'Builder #add_link' do
+  let(:serializer) { ASerializer.new }
+  let(:builder) { Hal::Builder.new(serializer: serializer) }
+
+  before do
+    @current_node = builder.instance_variable_get('@current_node')
+    builder.add_link({href: 'http://foo/bar'})
+    @node = @current_node.children.detect{ |node| node.type == :link }
+  end
+
   it 'creates a link node under the current node' do
+    expect(@node).not_to be_nil
+  end
+
+  it 'sets properities on the node' do
+    expect(@node.properties).to eq({ href: 'http://foo/bar' })
   end
 end
 
 describe 'Builder #add_resource' do
-  it 'creates a resource node under the current node' do
+  let(:resource) { double }
+  let(:serializer) { ASerializer.new }
+  let(:builder) { Hal::Builder.new(serializer: serializer) }
+
+  before do
+    serializer.instance_variable_set('@account', resource)
+    @current_node = builder.instance_variable_get('@current_node')
+    @root_node = builder.instance_variable_get('@root_node')
+    @node = @current_node.children.detect{ |node| node.type == :resource }
   end
 
+  # it 'creates a resource node under the current node' do
+  #   builder.add_resource(:account)
+  #   expect(@node).not_to be_nil
+  # end
+
   it 'serializes the added resource' do
+    expect(Hal).to receive(:serialize).with(resource, { root: @root_node, current: @node, recursive: false })
+    builder.add_resource(:account)
   end
 end
 

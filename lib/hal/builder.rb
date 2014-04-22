@@ -124,7 +124,7 @@ module Hal
     # Making assumptions that the serializer always holds the resource(s)
     # as instance variable
     def resource_for(name)
-      @serializer.instance_variable_get('@#{name}')
+      @serializer.instance_variable_get("@#{name}")
     end
   end
 end
