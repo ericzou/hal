@@ -43,7 +43,7 @@ module Hal
       end
     end
 
-    def add_relation(name, properties, options={})
+    def add_relation(name, properties)
       node = Hal::Node.new(type: :relation, name: name, properties: properties)
       @current_node.add_child(node)
     end
