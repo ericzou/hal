@@ -66,7 +66,7 @@ describe 'Builder #add_attributes' do
   let(:serializer) { ASerializer.new }
   let(:builder) { Hal::Builder.new(serializer: serializer) }
   it 'adds all attributes from serializer to the current node' do
-    properties = builder.instance_variable_get('@current_node').properties
+    properties = assigns(builder, :current_node).properties
     builder.add_attributes
     expect(properties).to eq({ foo: 'foo', bar: 'bar'})
   end
@@ -81,7 +81,7 @@ describe 'Builder #add_links' do
   let(:builder) { Hal::Builder.new(serializer: serializer) }
 
   before do
-    @current_node = builder.instance_variable_get('@current_node')
+    @current_node = assigns(builder, :current_node)
   end
 
   it 'creates a _links node under the current node' do
@@ -104,7 +104,7 @@ describe 'Builder #add_embedded' do
   let(:builder) { Hal::Builder.new(serializer: serializer) }
 
   before do
-    @current_node = builder.instance_variable_get('@current_node')
+    @current_node = assigns(builder, :current_node)
   end
 
   it 'creates a _embedded node under the current node' do
@@ -123,9 +123,9 @@ describe 'Builder #add_relation' do
   let(:builder) { Hal::Builder.new(serializer: serializer) }
 
   before do
-    @current_node = builder.instance_variable_get('@current_node')
+    @current_node = assigns(builder, :current_node)
     builder.add_relation(:foo, href: 'http://example.com')
-    @node = @current_node.children.detect{ |node| node.type == :relation}
+    @node = first_child_node_of_type(@current_node, :relation)
   end
 
   it 'creates a relation node under the current node' do
@@ -154,12 +154,12 @@ describe 'Builder #add_relations' do
   let(:builder) { Hal::Builder.new(serializer: serializer) }
 
   before do
-    @current_node = builder.instance_variable_get('@current_node')
+    @current_node = assigns(builder, :current_node)
   end
 
   it 'creates a relations node under the current node' do
     builder.add_relations(:comments) {}
-    node = @current_node.children.detect{ |node| node.type == :relations}
+    node = first_child_node_of_type(@current_node, :relations)
     expect(node).not_to be_nil
   end
 
@@ -177,9 +177,9 @@ describe 'Builder #add_link' do
   let(:builder) { Hal::Builder.new(serializer: serializer) }
 
   before do
-    @current_node = builder.instance_variable_get('@current_node')
+    @current_node = assigns(builder, :current_node)
     builder.add_link({href: 'http://foo/bar'})
-    @node = @current_node.children.detect{ |node| node.type == :link }
+    @node = first_child_node_of_type(@current_node, :link )
   end
 
   it 'creates a link node under the current node' do
@@ -195,21 +195,24 @@ describe 'Builder #add_resource' do
   let(:resource) { double }
   let(:serializer) { ASerializer.new }
   let(:builder) { Hal::Builder.new(serializer: serializer) }
+  let(:resource_node) { double }
 
   before do
     serializer.instance_variable_set('@account', resource)
-    @current_node = builder.instance_variable_get('@current_node')
-    @root_node = builder.instance_variable_get('@root_node')
-    @node = @current_node.children.detect{ |node| node.type == :resource }
+    allow(Hal).to receive(:serializer_for).with(resource).and_return(serializer)
+    @current_node = assigns(builder, :current_node)
+    @root_node = assigns(builder, :root_node)
   end
 
-  # it 'creates a resource node under the current node' do
-  #   builder.add_resource(:account)
-  #   expect(@node).not_to be_nil
-  # end
+  it 'creates a resource node under the current node' do
+    builder.add_resource(:account)
+    @node = first_child_node_of_type(@current_node, :resource)
+    expect(@node).not_to be_nil
+  end
 
   it 'serializes the added resource' do
-    expect(Hal).to receive(:serialize).with(resource, { root: @root_node, current: @node, recursive: false })
+    allow(builder).to receive(:attach_new_node).and_return(resource_node)
+    expect(Hal).to receive(:serialize).with(resource, { root: @root_node, current: resource_node, recursive: false })
     builder.add_resource(:account)
   end
 end
