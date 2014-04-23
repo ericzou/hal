@@ -218,98 +218,30 @@ describe 'Builder #add_resource' do
 end
 
 describe 'Builder #add_resources' do
+  let(:first_comment) { double }
+  let(:second_comment) { double }
+  let(:resources) { [first_comment, second_comment] }
+  let(:serializer) { ASerializer.new }
+  let(:builder) { Hal::Builder.new(serializer: serializer) }
+  let(:resource_node) { double }
+
+  before do
+    serializer.instance_variable_set('@comments', resources)
+    allow(Hal).to receive(:serializer_for).and_return(serializer)
+    @current_node = assigns(builder, :current_node)
+    @root_node = assigns(builder, :root_node)
+  end
+
   it 'creates a resources node under the current node' do
+    builder.add_resources(:comments)
+    @node = first_child_node_of_type(@current_node, :resources)
+    expect(@node).not_to be_nil
   end
 
   it 'serializes each added resource' do
+    allow(builder).to receive(:attach_new_node).and_return(resource_node)
+    expect(Hal).to receive(:serialize).with(first_comment, { root: @root_node, current: resource_node, recursive: false }).once
+    expect(Hal).to receive(:serialize).with(second_comment, { root: @root_node, current: resource_node, recursive: false }).once
+    builder.add_resources(:comments)
   end
 end
-
-
-
-describe 'Builder when adding attributes' do
-  let(:serializer) { ASerializer.new }
-  let(:builder) { builder = Hal::Builder.new(serializer: serializer) }
-
-  it
-end
-
-# describe 'Builder #resource' do
-#   let(:builder) { Hal::Builder.new }
-#   it 'returns the resource in curent context' do
-#     builder.curernt_context = :root
-#     expect(builder.resource).to equal(builder.root_resource)
-#   end
-# end
-
-# describe 'Builder when building attributes' do
-#   let(:user) { User.new('Jane', 'jane@example.com', '123 main st.') }
-#   let(:serializer) { serializer = UserSerializer.new(user) }
-#   let(:builder) { Hal::Builder.new(serializer) }
-
-#   it 'builds attributes' do
-#     serializer.attributes = [:name, :email, :address]
-#     build.build_attribute
-#     expect(builder.resource.as_json).to equal({ name: 'Jane', email: 'jane@example.com', address: '123 main st.'})
-#   end
-
-#   it 'ignores attributes' do
-#     serializer.attributes = [:name]
-#     resource = build.build_resource
-#     expect(builder.resource.as_json).to equal({ name: 'Jane'})
-#   end
-
-#   it 'overrides attributes' do
-#     serializer.attributes = [:name, :age]
-#     serializer.instance_eval do
-#       def name
-#         return 'foo'
-#       end
-
-#       def age
-#         13
-#       end
-#     end
-#     resource = build.build_resource
-#     expect(builder.resource.as_json).to equal({ name: 'foo', age: 13 })
-#   end
-# end
-
-# describe 'Builder when building relations' do
-#   let(:user) { User.new('Jane', 'jane@example.com', '123 main st.') }
-#   let(:serializer) { serializer = UserSerializer.new(user) }
-#   let(:builder) { Hal::Builder.new(serializer) }
-
-#   it 'attaches relation to the current context' do
-#     expected = { '_links' :
-#       self: {}
-#     }
-#     builder.curernt_context = '_links'
-#     builder.add_relation :self
-#     expect(builder.resource.as_json).to equal(expcted)
-#   end
-
-#   it 'passes params' do
-#     expected = { '_links' :
-#       self: { href: 'http://example.com', title: 'foo', templated: false }
-#     }
-#     builder.curernt_context = '_links'
-#     builder.add_relation :self, href: 'http://example.com', title: 'foo', templated: false
-#     expect(builder.resource.as_json).to equal(expcted)
-#   end
-
-#   describe 'relations' do
-#     expected = {
-#       '_links':
-#         comments: [
-#           { href: 'http://example.com/comments/1'},
-#           { href: 'http://example.com/comments/2'}
-#         ]
-#     }
-
-#     builder.curernt_context = '_links'
-#     builder.add_relations :comments do
-#     end
-#   end
-
-# end
