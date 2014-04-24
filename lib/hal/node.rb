@@ -11,12 +11,23 @@ module Hal
     end
 
     def as_json
-      self.children.each do |node|
-        self.attach_node(node)
+      children.each do |node|
+        attach_node(node)
       end
-      self.attach_properties
+      attach_properties
       return @data
     end
+
+    def add_child(node)
+      node.parent = self
+      self.children << node
+    end
+
+    def add_property(key, value)
+      @properties[key] = value
+    end
+
+    private
 
     def attach_node(node)
       if node.name
@@ -34,19 +45,6 @@ module Hal
 
     def attach_properties
       @properties.each { |key, value| @data[key] = value }
-    end
-
-    def add_property(key, value)
-      @properties[key] = value
-    end
-
-    def property(key)
-      @properties[key]
-    end
-
-    def add_child(node)
-      node.parent = self
-      self.children << node
     end
 
   end
